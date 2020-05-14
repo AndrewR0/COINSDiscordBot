@@ -1,1 +1,1 @@
-# MoolahDiscordBot
+# MerchantDiscordBot
