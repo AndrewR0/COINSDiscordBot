@@ -29,4 +29,4 @@ def contains(file, name):
             return True
         return False
 
-client.run("NzEwNTc1NzQ0MTk0OTY5NzEx.Xr2dvw.49hzjCcIh2ye9kIoJc2kQxxRO-k")
+client.run("INSERT BOT TOKEN HERE")
