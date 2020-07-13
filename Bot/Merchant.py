@@ -8,25 +8,37 @@ client = commands.Bot(command_prefix = ".")
 async def on_ready():
     print("Bot is ready.")
 
-@client.event
-async def on_message(message):
-    members = open("Members","w")
-    if message.content.startswith('.refresh'):
+@client.command()
+async def refresh(ctx):
+    sender = ctx.message.author
+    owner = ctx.message.guild.owner
+
+    #if ctx.message.author == ctx.message.guild.owner and ctx.message.content.startswith('.refresh'):
+    if sender == owner and ctx.message.content.startswith('.refresh'):
+        members = open("Members.txt","a+")
+
         for guild in client.guilds:
-            #print(guild)
+            print(guild)
             for member in guild.members:
-                #print(member)
+                print(member)
                 for role in member.roles:
-                    #print(role)
+                    print(role)
                     if role.name == "IRL":
-                        if contains("Members",member) == False:
+                        if contains(members.name,member) == False:
                             members.write(str(member))
                             members.write("\n")
-                            #print(members)
+        members.close()
+
+    #elif ctx.message.author is not ctx.message.guild.owner:
+    elif sender is not owner:
+        await ctx.send(f"{sender} is not owner")
+
 def contains(file, name):
     with open(file) as f:
         if str(name) in f.read():
             return True
         return False
 
-client.run("NzEwNTc1NzQ0MTk0OTY5NzEx.Xr2dvw.49hzjCcIh2ye9kIoJc2kQxxRO-k")
+
+
+client.run("INSERT BOT TOKEN HERE")
