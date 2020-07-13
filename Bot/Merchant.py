@@ -3,6 +3,7 @@ from discord.ext import commands, tasks
 from itertools import cycle
 
 client = commands.Bot(command_prefix = ".")
+storeContents = open("Store.txt", "w")
 
 @client.event #Indicates bot is online
 async def on_ready():
@@ -12,12 +13,12 @@ async def on_ready():
 @commands.has_permissions(manage_messages=True)
 async def clear(ctx, amount : int):
     await ctx.channel.purge(limit=amount)
-
-@clear.error
-async def clear_error(ctx, error):
-    if isinstance(error, commands.MissingPermissions):
-        await ctx.send("Missing permissions.")
-
+'''
+@client.event
+async def on_command_error(ctx, error):
+    await ctx.send("Some error occured.")
+    print(error)
+'''
 #resets the txt file that stores the members and their balance
 @client.command()
 async def refresh(ctx):
@@ -27,6 +28,7 @@ async def refresh(ctx):
     #if ctx.message.author == ctx.message.guild.owner and ctx.message.content.startswith('.refresh'):
     if sender == owner:
         members = open("Members.txt","w")
+        print(members.name)
 
         for guild in client.guilds:
             #print(guild)
@@ -52,10 +54,14 @@ def contains(file, name):
             return True
         return False
 
+#Allows an admin to add an item(s) to the store
 @client.command()
 @commands.has_permissions(administrator=True)
-async def stock(ctx, item, cost):
-    store = open("Store.txt", "a+")
+async def stock(ctx, item, cost, quantity):
+    if contains(storeContents.name,item) == False:
+        storeContents.write(f"{str(item)};{str(cost)};{str(quantity)}")
+    storeContents.close()
+    await ctx.send(f"{quantity} {item} has been added to the store for {cost} currency")
 
 #Allow a user to buy items from the store
 @client.command()
@@ -73,5 +79,4 @@ async def store():
     pass
 
 
-
-client.run("NzEwNTc1NzQ0MTk0OTY5NzEx.Xua_jA.oEez1Hdn-2iiOXdspMVX10zsOs4")
+client.run("NzEwNTc1NzQ0MTk0OTY5NzEx.XwvVGw.JGGcUS4qRlYc3N_YX9ySUTwu7m4")
