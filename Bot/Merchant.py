@@ -3,7 +3,6 @@ from discord.ext import commands, tasks
 from itertools import cycle
 
 client = commands.Bot(command_prefix = ".")
-storeContents = open("Store.txt", "w")
 
 @client.event #Indicates bot is online
 async def on_ready():
@@ -54,14 +53,30 @@ def contains(file, name):
             return True
         return False
 
+#REDO THIS ENTIRE SHIT TO MAKE IT EASIER TO ACCESS>>>AHHHHHHHHH
 #Allows an admin to add an item(s) to the store
 @client.command()
 @commands.has_permissions(administrator=True)
 async def stock(ctx, item, cost, quantity):
-    if contains(storeContents.name,item) == False:
-        storeContents.write(f"{str(item)};{str(cost)};{str(quantity)}")
+    storeContents = open("Store.txt", "a+")
+
+    with open(storeContents.name, "r") as f:
+        check = False
+        for line in f:
+            spliting = line.split(";")
+            print(spliting)
+
+            if line[0] != item:
+                check = False
+            else:
+                line[1] = str(cost)
+                line[2] = str(int(line[2]) + quantity)
+                check == True
+        if check == False:
+            storeContents.write(f"{str(item)};{str(cost)};{str(quantity)}\n")
+
     storeContents.close()
-    await ctx.send(f"{quantity} {item} has been added to the store for {cost} currency")
+    await ctx.send(f"{quantity} {item} has been added to the store for ☭{cost}")
 
 #Allow a user to buy items from the store
 @client.command()
@@ -79,4 +94,4 @@ async def store():
     pass
 
 
-client.run("NzEwNTc1NzQ0MTk0OTY5NzEx.XwvVGw.JGGcUS4qRlYc3N_YX9ySUTwu7m4")
+client.run("NzEwNTc1NzQ0MTk0OTY5NzEx.XwvhfA.4AwTQkKue9ZXUAk2mxQyX23cA7Q")
