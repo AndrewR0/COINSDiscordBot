@@ -40,25 +40,21 @@ async def refresh(ctx):
     elif sender is not owner:
         await ctx.send(f"{sender} is not owner")
 
-#checks file for name
-def contains(file, name):
-    with open(file) as f:
-        if str(name) in f.read():
-            return True
-        return False
-
 #Allows an admin to add an item(s) to the store
 @client.command()
 @commands.has_permissions(administrator=True)
 async def stock(ctx, item, cost, quantity):
     storeContents = open("Store.json", "a+")
     storeList = []
-    with open(storeContents.name, "a+") as f:
+    with open(storeContents.name, "r") as f:
+
+        #this block is for if there is a new addition, can also be used for adding everything back into the file
         jsonObject = json.dumps({"Item": item, "Cost": cost, "Quantity": quantity}, indent=3)
         f.write(jsonObject)
-        #json.dump({"Item": item, "Cost": cost, "Quantity": quantity}, f)
         f.write("\n")
-        '''
+        #############################################
+
+        #############################################
         #appends the data from the json file into a list
         for line in f:
             storeList.append(json.loads(line))
@@ -69,30 +65,12 @@ async def stock(ctx, item, cost, quantity):
                 storeList[index].update({"Cost": cost})
                 storeList[index].update({"Quantity": str(int(storeList[index].get("Quantity"))+int(quantity))})
                 print(storeList[index])
-        '''
+        #############################################
+
         storeContents.close()
 
-    '''
-    storeContents = open("Store.txt", "a+")
-
-    with open(storeContents.name, "r") as f:
-        check = False
-        for line in f:
-            spliting = line.split(";")
-            print(spliting)
-
-            if line[0] != item:
-                check = False
-            else:
-                line[1] = str(cost)
-                line[2] = str(int(line[2]) + quantity)
-                check == True
-        if check == False:
-            storeContents.write(f"{str(item)};{str(cost)};{str(quantity)}\n")
-
-    storeContents.close()
     await ctx.send(f"{quantity} {item} has been added to the store for ☭{cost}")
-    '''
+
 #Allow a user to buy items from the store
 @client.command()
 async def buy(ctx, item):
@@ -109,4 +87,4 @@ async def store():
     pass
 
 
-client.run("NzEwNTc1NzQ0MTk0OTY5NzEx.Xw0B5Q.2aF8CXKAaQMmS52UsBQlS3KXC0s")
+client.run("INSERT BOT TOKEN")
