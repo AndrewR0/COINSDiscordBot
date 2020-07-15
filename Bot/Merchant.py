@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands, tasks
-from itertools import cycle
+import itertools
+import json
 
 client = commands.Bot(command_prefix = ".")
 
@@ -23,26 +24,19 @@ async def on_command_error(ctx, error):
 async def refresh(ctx):
     sender = ctx.message.author
     owner = ctx.message.guild.owner
-
-    #if ctx.message.author == ctx.message.guild.owner and ctx.message.content.startswith('.refresh'):
     if sender == owner:
-        members = open("Members.txt","w")
-        print(members.name)
+        members = open("Members.json","w")
+        #print(members.name)
 
         for guild in client.guilds:
-            #print(guild)
             for member in guild.members:
-                #print(member)
                 for role in member.roles:
-                    #print(role)
-
                     if role.name == "IRL":
-                        if contains(members.name,member) == False:
-                            members.write(str(member)+";1000;")
-                            members.write("\n")
-        members.close()
-
-    #elif ctx.message.author is not ctx.message.guild.owner:
+                        with open(members.name, "a+") as f:
+                            jsonObject = json.dumps({"Name": str(member), "Wallet": "1000"}, indent=2)
+                            f.write(jsonObject)
+                            f.write("\n")
+                            members.close()
     elif sender is not owner:
         await ctx.send(f"{sender} is not owner")
 
@@ -53,11 +47,32 @@ def contains(file, name):
             return True
         return False
 
-#REDO THIS ENTIRE SHIT TO MAKE IT EASIER TO ACCESS>>>AHHHHHHHHH
 #Allows an admin to add an item(s) to the store
 @client.command()
 @commands.has_permissions(administrator=True)
 async def stock(ctx, item, cost, quantity):
+    storeContents = open("Store.json", "a+")
+    storeList = []
+    with open(storeContents.name, "a+") as f:
+        jsonObject = json.dumps({"Item": item, "Cost": cost, "Quantity": quantity}, indent=3)
+        f.write(jsonObject)
+        #json.dump({"Item": item, "Cost": cost, "Quantity": quantity}, f)
+        f.write("\n")
+        '''
+        #appends the data from the json file into a list
+        for line in f:
+            storeList.append(json.loads(line))
+
+        #checks for already exisiting items in the store
+        for index in range(len(storeList)):
+            if storeList[index].get("Item") == item.lower():
+                storeList[index].update({"Cost": cost})
+                storeList[index].update({"Quantity": str(int(storeList[index].get("Quantity"))+int(quantity))})
+                print(storeList[index])
+        '''
+        storeContents.close()
+
+    '''
     storeContents = open("Store.txt", "a+")
 
     with open(storeContents.name, "r") as f:
@@ -77,7 +92,7 @@ async def stock(ctx, item, cost, quantity):
 
     storeContents.close()
     await ctx.send(f"{quantity} {item} has been added to the store for ☭{cost}")
-
+    '''
 #Allow a user to buy items from the store
 @client.command()
 async def buy(ctx, item):
@@ -94,4 +109,4 @@ async def store():
     pass
 
 
-client.run("NzEwNTc1NzQ0MTk0OTY5NzEx.XwvhfA.4AwTQkKue9ZXUAk2mxQyX23cA7Q")
+client.run("NzEwNTc1NzQ0MTk0OTY5NzEx.Xw0B5Q.2aF8CXKAaQMmS52UsBQlS3KXC0s")
