@@ -98,4 +98,4 @@ async def store():
     pass
 
 
-client.run("NzEwNTc1NzQ0MTk0OTY5NzEx.Xw8ccg.yky-_jAA8wR-FRSTaI9hSYROJJE")
+client.run("INSERT BOT TOKEN")
