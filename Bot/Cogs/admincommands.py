@@ -1,7 +1,8 @@
 import discord
 from discord.ext import commands
-import os
 import sqlite3
+import os
+
 
 conn = sqlite3.connect("Members.db") #Cahnge name from Members to like Database if easier
 c = conn.cursor()
@@ -68,6 +69,19 @@ class AdminCommands(commands.Cog):
         else:
             c.execute("INSERT INTO store VALUES (?, ?, ?)", (itemL, cost, quantity,))
             conn.commit()
+
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def unstock(self, ctx, item):
+        itemL = item.lower()
+
+        c.execute("SELECT * FROM store WHERE name=?", (itemL,))
+        result = c.fetchone()
+        if result != None: #if the item exists
+            c.execute("DELETE FROM store WHERE name=?", (itemL,))
+            conn.commit()
+        else:
+            await ctx.send("No such item is stocked")
 
 def setup(client):
     client.add_cog(AdminCommands(client))

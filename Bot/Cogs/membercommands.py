@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import sqlite3
 import os
 
 class MemberCommands(commands.Cog):
