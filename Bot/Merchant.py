@@ -1,26 +1,59 @@
+#Database help: https://www.youtube.com/watch?v=pd-0G0MigUA&t=0s
+
+
 import discord
 from discord.ext import commands, tasks
-import itertools
 import json
+import os
 
 client = commands.Bot(command_prefix = ".")
 
-@client.event #Indicates bot is online
+"""@client.event #Indicates bot is online
 async def on_ready():
-    print("Bot is ready.")
+    if os.path.isfile("Store.json") == False:
+        store = open("Store.json", "w")
+        print(os.stat("Store.json").st_size)
+        print(f"{store.name} created")
+    print("Bot is ready.")"""
 
 @client.command()
+@commands.has_permissions(administrator=True)
+async def reload(ctx, extension):
+    client.unload_extension(f"Cogs.{extension}")
+    client.load_extension(f"Cogs.{extension}")
+
+@client.command()
+@commands.has_permissions(administrator=True)
+async def unload(ctx, extension):
+    client.unload_extension(f"Cogs.{extension}")
+
+@client.command()
+@commands.has_permissions(administrator=True)
+async def load(ctx, extension):
+    client.load_extension(f"Cogs.{extension}")
+
+for filename in os.listdir("./Cogs"):
+    if filename.endswith(".py"):
+        client.load_extension(f"Cogs.{filename[:-3]}")
+
+"""@client.command()
 @commands.has_permissions(manage_messages=True)
 async def clear(ctx, amount : int):
-    await ctx.channel.purge(limit=amount)
+    await ctx.channel.purge(limit=amount)"""
+
 '''
 @client.event
 async def on_command_error(ctx, error):
     await ctx.send("Some error occured.")
     print(error)
 '''
+
+"""@client.command()
+async def exit(ctx):
+    await client.logout()"""
+
 #resets the txt file that stores the members and their balance
-@client.command()
+"""@client.command()
 async def refresh(ctx):
     sender = ctx.message.author
     owner = ctx.message.guild.owner
@@ -38,51 +71,48 @@ async def refresh(ctx):
                             f.write("\n")
                             members.close()
     elif sender is not owner:
-        await ctx.send(f"{sender} is not owner")
+        await ctx.send(f"{sender} is not owner")"""
 
-'''
-#Allows an admin to add an item(s) to the store
-@client.command()
+#THIS ENTIRE FUCKING METHOD DOESNT WORK HOW IT SHOULD, TEST FORMATTING THE FILE ON START AND FIRST ITEM INPUT IS CORRECT, FIGURE OUT
+#HOW TO WRITE BACK INTO THE JSON FILE AFTER CHANGES ARE MADE TO THE LOCAL DICT THAT STORES THE CONTENTS, AND THEN BE ABLE TO INPUT
+#NEW ITEMS
+"""@client.command()
 @commands.has_permissions(administrator=True)
 async def stock(ctx, item, cost, quantity):
-    storeContents = open("Store.json", "a+")
-    storeList = []
 
-    print(storeContents)
+    print(os.stat("Store.json").st_size)
 
-    with open(storeContents.name, "r") as f:
-        for line in f:
-            storeList.append(json.loads(line))
-            print(storeList)
+    if os.stat("Store.json").st_size == 0:
+        print("check")
 
-        with open(storeContents.name, "w") as f:
+        store = open("Store.json", "w")
+        jsonObject = json.dumps({item:[{"Cost": cost, "Quantity": quantity}]}, indent=3)
+        store.write(jsonObject)
+        store.close()
+    else:
+        store = open("Store.json", "r+")
+        data = json.load(store)
+        if item in data:
+            #val = data.get(item)[0].get("Cost")
+            #quant = data.get(item)[0].get("Quantity")
+            #print(val, quant)
 
-            #this block is for if there is a new addition, can also be used for adding everything back into the file
-            jsonObject = json.dumps({"Item": item, "Cost": cost, "Quantity": quantity}, indent=3)
-            f.write(jsonObject)
-            f.write("\n")
-            #############################################
-
-            #############################################
-            #appends the data from the json file into a list
-            for line in f:
-                storeList.append(json.loads(line))
-
-            #checks for already exisiting items in the store
-            for index in range(len(storeList)):
-                if storeList[index].get("Item") == item.lower():
-                    storeList[index].update({"Cost": cost})
-                    storeList[index].update({"Quantity": str(int(storeList[index].get("Quantity"))+int(quantity))})
-                    print(storeList[index])
-            #############################################
-
-    storeContents.close()
+            with open("Store.json", "w") as f:
+                print(f"old {data}")
+                dict = data.get(item)[0]
+                dict2 = {"Cost": cost, "Quantity": str(int(data.get(item)[0].get("Quantity")) + int(quantity))}
+                print(data.get(item)[0])
+                z = dict.update(dict2)
+                print(f"new {data}")
+                json.dumps(data)
+                store.close()
+        else:
+            data[item] = [{"Cost": cost, "Quantity": quantity}]
+            json.dumps(data)
+            store.close()"""
 
 
-    #await ctx.send(f"{quantity} {item} has been added to the store for ☭{cost}")
-
-'''
-#Allow a user to buy items from the store
+"""#Allow a user to buy items from the store
 @client.command()
 async def buy(ctx, item):
     pass
@@ -95,7 +125,7 @@ async def sell(ctx, item):
 #Allows a user to print the contents of the store, the price, and quantity
 @client.command()
 async def store():
-    pass
+    pass"""
 
 
-client.run("INSERT BOT TOKEN")
+client.run("NzEwNTc1NzQ0MTk0OTY5NzEx.Xr2dOw.SDKP0Cjvc1rUXavHdIBFBicUFsQ")
