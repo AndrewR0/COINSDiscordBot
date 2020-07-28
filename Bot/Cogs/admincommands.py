@@ -57,11 +57,11 @@ class AdminCommands(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def stock(self, ctx, item, cost, quantity):
         itemL = item.lower()
-        print(type(item), type(cost), type(int(quantity)))
+        #print(type(item), type(cost), type(int(quantity)))
 
         c.execute("SELECT * FROM store WHERE name=?", (itemL,))
         result = c.fetchone()
-        if result[0] == itemL: #if the item exists
+        if result != None: #if the item exists
             change = result[2]+int(quantity)
             c.execute("UPDATE store SET price=?,amount=? WHERE name=?", (cost, change, itemL,))
             conn.commit()
