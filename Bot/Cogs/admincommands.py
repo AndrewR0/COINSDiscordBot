@@ -59,20 +59,15 @@ class AdminCommands(commands.Cog):
         itemL = item.lower()
         print(type(item), type(cost), type(int(quantity)))
 
-        c.execute("SELECT count(*) FROM store")
-        result = c.fetchall()
-        if result[0][0] == 0: #if the table is empty
-            c.execute("INSERT INTO store VALUES (?, ?, ?)", (itemL, cost, quantity,))
+        c.execute("SELECT * FROM store WHERE name=?", (itemL,))
+        result = c.fetchone()
+        if result[0] == itemL: #if the item exists
+            change = result[2]+int(quantity)
+            c.execute("UPDATE store SET price=?,amount=? WHERE name=?", (cost, change, itemL,))
             conn.commit()
         else:
-            c.execute("SELECT * FROM store WHERE name=?", (itemL,))
-            result = c.fetchone()
-            if result[0] == itemL: #if the item exists
-                change = result[2]+int(quantity)
-                c.execute("UPDATE store SET price=?,amount=? WHERE name=?", (cost, change, itemL,))
-                conn.commit()
-            else:
-                pass
+            c.execute("INSERT INTO store VALUES (?, ?, ?)", (itemL, cost, quantity,))
+            conn.commit()
 
 def setup(client):
     client.add_cog(AdminCommands(client))
