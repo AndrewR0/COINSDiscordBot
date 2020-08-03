@@ -68,11 +68,14 @@ class AdminCommands(commands.Cog):
         result = c.fetchone()
         if result != None: #if the item exists
             change = result[2]+int(quantity)
-            c.execute("UPDATE store SET price=?,amount=? WHERE name=?", (cost, change, itemL,))
+            c.execute("UPDATE store SET price=?,quantity=? WHERE name=?", (cost, change, itemL,))
             conn.commit()
+            print("updating")
             await ctx.send(f"{quantity} {item.upper()} has been added for Å{cost} each")
+        else:
             c.execute("INSERT INTO store VALUES (?, ?, ?)", (itemL, cost, quantity,))
             conn.commit()
+            print("adding")
             await ctx.send(f"{quantity} {item.upper()} has been added for Å{cost} each")
 
     @commands.command()
@@ -85,8 +88,10 @@ class AdminCommands(commands.Cog):
         if result != None: #if the item exists
             c.execute("DELETE FROM store WHERE name=?", (itemL,))
             conn.commit()
+            print("removing")
             await ctx.send(f"{item.upper()} has been removed")
         else:
+            print("N/A")
             await ctx.send("No such item is stocked")
 
 def setup(client):
