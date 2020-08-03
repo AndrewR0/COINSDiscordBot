@@ -4,8 +4,11 @@ import sqlite3
 import os
 
 
-conn = sqlite3.connect("Members.db") #Cahnge name from Members to like Database if easier
+conn = sqlite3.connect("Data.db")
 c = conn.cursor()
+
+#bank table stores the members' id, balance, and items
+#store table stores items' name, cost, and quantity
 
 class AdminCommands(commands.Cog):
 
@@ -32,26 +35,27 @@ class AdminCommands(commands.Cog):
         sender = ctx.message.author
         owner = ctx.message.guild.owner
         if sender == owner:
-            c.execute("SELECT count(*) FROM members")
-            result = c.fetchall()
-            if result[0][0] == 0: #if the table is empty
+
+            c.execute("SELECT count(*) FROM bank")
+            count = c.fetchall()
+            if count[0][0] == 0:
                 for guild in self.client.guilds:
                     for member in guild.members:
                         for role in member.roles:
                             if role.name == roleName:
-                                c.execute("INSERT INTO members VALUES (?, ?)", (str(member), startAm,))
+                                c.execute("INSERT INTO bank VALUES (?,?,?)", (member.id, startAm, '{}',))
                                 conn.commit()
 
             else: #if not empty
-                c.execute("DELETE FROM Members")
+                c.execute("DELETE FROM bank")
                 for guild in self.client.guilds:
                     for member in guild.members:
                         for role in member.roles:
                             if role.name == roleName:
-                                c.execute("INSERT INTO members VALUES (?, ?)", (str(member), startAm,))
+                                c.execute("INSERT INTO bank VALUES (?,?,?)", (member.id, startAm, '{}',))
                                 conn.commit()
 
-        c.execute("SELECT * FROM members")
+        c.execute("SELECT * FROM bank")
         print(c.fetchall())
 
     @commands.command()
@@ -66,9 +70,10 @@ class AdminCommands(commands.Cog):
             change = result[2]+int(quantity)
             c.execute("UPDATE store SET price=?,amount=? WHERE name=?", (cost, change, itemL,))
             conn.commit()
-        else:
+            await ctx.send(f"{quantity} {item.upper()} has been added for Å{cost} each")
             c.execute("INSERT INTO store VALUES (?, ?, ?)", (itemL, cost, quantity,))
             conn.commit()
+            await ctx.send(f"{quantity} {item.upper()} has been added for Å{cost} each")
 
     @commands.command()
     @commands.has_permissions(administrator=True)
@@ -80,6 +85,7 @@ class AdminCommands(commands.Cog):
         if result != None: #if the item exists
             c.execute("DELETE FROM store WHERE name=?", (itemL,))
             conn.commit()
+            await ctx.send(f"{item.upper()} has been removed")
         else:
             await ctx.send("No such item is stocked")
 

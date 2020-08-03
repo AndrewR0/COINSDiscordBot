@@ -1,4 +1,5 @@
 #Database help: https://www.youtube.com/watch?v=pd-0G0MigUA&t=0s
+#Cogs help: https://www.youtube.com/watch?v=vQw8cFfZPx0
 
 import discord
 from discord.ext import commands, tasks
