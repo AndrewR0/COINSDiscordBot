@@ -58,6 +58,23 @@ class AdminCommands(commands.Cog):
         c.execute("SELECT * FROM bank")
         print(c.fetchall())
 
+    @commands.command(aliases=['add'])
+    @commands.has_permissions(administrator=True)
+    async def addMember(self, ctx, id, startAm=1000):
+        print(id[3:-1])
+        member = id[3:-1]
+        #figure out a way to print the name of the user from the ID to the console
+        c.execute("INSERT INTO bank VALUES (?,?,?)", (member, startAm, '{}',))
+        conn.commit()
+
+    @commands.command(aliases=['remove'])
+    @commands.has_permissions(administrator=True)
+    async def removeMember(self, ctx, id):
+        print(id[3:-1])
+        member = id[3:-1]
+        c.execute("DELETE FROM bank WHERE id=?", (member,))
+        conn.commit()
+
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def stock(self, ctx, item, cost, quantity):

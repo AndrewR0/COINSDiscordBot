@@ -13,14 +13,20 @@ class MemberCommands(commands.Cog):
 
     @commands.command()
     async def buy(self, ctx, item, quantity=1):
-        c.execute("SELECT name FROM store WHERE name=?", (item,))
-        result = c.fetchone()
-        print(result[0])
-        #1) check if the user sending the message is a member that can use the commands
-        #2) check if the store contains the item they wish to buy
-        #3) check if the quantity of the item is >0
-        #4) check if the user has the necessary money
-        #5) idk something else probably
+        senderID = ctx.message.author.id
+        #print(senderID)
+        c.execute("SELECT id FROM bank WHERE id=?", (senderID,))
+        member = c.fetchone()
+        if member != None: #check if the user sending the message is a member that can use the commands
+            c.execute("SELECT name FROM store WHERE name=?", (item,))
+            result = c.fetchone()
+            #print(result[0])
+            #2) check if the store contains the item they wish to buy
+            #3) check if the quantity of the item is >0
+            #4) check if the user has the necessary money
+            #5) idk something else probably
+        else:
+            await ctx.send(f"{ctx.message.author} is not a member")
 
 
         """dict = eval(result[0])
