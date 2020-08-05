@@ -4,7 +4,7 @@
 import discord
 from discord.ext import commands, tasks
 import os
-import BotToken #file containing bot token cause I'm an idiot and keep on forgetting to not commit with the token
+from BotToken import BotToken #file containing bot token cause I'm an idiot and keep on forgetting to not commit with the token
 
 client = commands.Bot(command_prefix = ".")
 
@@ -29,4 +29,4 @@ for filename in os.listdir("./Cogs"):
         client.load_extension(f"Cogs.{filename[:-3]}")
 
 
-client.run(BotToken.BotToken)
+client.run(BotToken)
