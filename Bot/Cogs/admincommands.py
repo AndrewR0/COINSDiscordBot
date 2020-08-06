@@ -61,7 +61,7 @@ class AdminCommands(commands.Cog):
     @commands.command(aliases=['add'])
     @commands.has_permissions(administrator=True)
     async def addMember(self, ctx, id, startAm=1000):
-        print(id[3:-1])
+        print(f"adding {id[3:-1]}")
         member = id[3:-1]
         #figure out a way to print the name of the user from the ID to the console
         c.execute("INSERT INTO bank VALUES (?,?,?)", (member, startAm, '{}',))
@@ -70,10 +70,15 @@ class AdminCommands(commands.Cog):
     @commands.command(aliases=['remove'])
     @commands.has_permissions(administrator=True)
     async def removeMember(self, ctx, id):
-        print(id[3:-1])
+        print(f"removing {id[3:-1]}")
         member = id[3:-1]
         c.execute("DELETE FROM bank WHERE id=?", (member,))
         conn.commit()
+
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def addMoney(self, ctx, id, amount): #IMPLEMENT
+        pass
 
     @commands.command()
     @commands.has_permissions(administrator=True)

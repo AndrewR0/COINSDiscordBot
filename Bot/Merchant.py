@@ -7,6 +7,7 @@ import os
 from BotToken import BotToken #file containing bot token cause I'm an idiot and keep on forgetting to not commit with the token
 
 client = commands.Bot(command_prefix = ".")
+client.remove_command('help')
 
 @client.command()
 @commands.has_permissions(administrator=True)
