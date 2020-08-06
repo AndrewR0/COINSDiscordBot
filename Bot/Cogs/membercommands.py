@@ -17,6 +17,7 @@ class MemberCommands(commands.Cog):
         if sender.top_role.permissions.administrator:
             embed = discord.Embed()
             embed.set_author(name="Help")
+            embed.add_field(name="Calling commands", value="Call commands with the \'.\' prefix (ex: .help)")
             embed.add_field(name="buy", value="Allows user to buy available items from the store; put the name of the item after the command (optional: amount of that item) ex: .buy bread 3", inline=False)
             embed.add_field(name="sell", value="Allows user to sell items from their inventory; ex: .sell bread 2", inline=False)
             embed.add_field(name="store", value="Shows the items available in the store along with their price and quantity", inline=False)
@@ -44,7 +45,6 @@ class MemberCommands(commands.Cog):
     @commands.command()
     async def buy(self, ctx, item, quantity=1): #put all executes at the top of method to clean up if and else's
         senderID = ctx.message.author.id
-        #print(senderID)
         c.execute("SELECT id FROM bank WHERE id=?", (senderID,))
         member = c.fetchone() #member id in database
 
@@ -88,7 +88,7 @@ class MemberCommands(commands.Cog):
             await ctx.send(f"{ctx.message.author} is not a member")
 
 
-    ##Allow a user to sell items from their iventory
+    #Allow a user to sell items from their iventory
     @commands.command()
     async def sell(self, ctx, item, quantity=1):
         pass
