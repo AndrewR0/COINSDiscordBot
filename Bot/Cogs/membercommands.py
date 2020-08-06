@@ -82,7 +82,7 @@ class MemberCommands(commands.Cog):
                     else:
                         await ctx.send("Insufficient funds")
                 else:
-                    await ctx.send("Invalid number of item")
+                    await ctx.send("Invalid quantity")
             else:
                 await ctx.send(f"{item.upper()} is not stocked")
         else:
@@ -92,7 +92,43 @@ class MemberCommands(commands.Cog):
     #Allow a user to sell items from their iventory
     @commands.command()
     async def sell(self, ctx, item, quantity=1):
-        pass
+        senderID = ctx.message.author.id
+        c.execute("SELECT id FROM bank WHERE id=?", (senderID,))
+        member = c.fetchone()
+
+        if member != None:
+            c.execute("SELECT items FROM bank WHERE id=?", (senderID,))
+            itemStr = c.fetchone()
+            itemDict = eval(itemStr[0])
+
+            if bool(itemDict):
+                itemL = item.lower()
+                if itemL in itemDict and quantity <= itemDict[itemL]:
+                    itemDict[itemL] -= quantity
+
+                    if itemDict[itemL] == 0:
+                        itemDict.pop(itemL)
+                    c.execute("SELECT quantity FROM store WHERE name=?", (itemL,))
+                    quant = c.fetchone()
+                    c.execute("SELECT balance FROM bank WHERE id=?", (senderID,))
+                    bal = c.fetchone() #balance of member trying to buy item
+                    c.execute("SELECT price FROM store WHERE name=?", (itemL,))
+                    cost = c.fetchone()
+
+                    balChange = bal[0] + (cost[0]*quantity)
+                    quantChange = quant[0] + quantity
+                    c.execute("UPDATE bank SET balance=?,items=?  WHERE id=?", (balChange,str(itemDict),senderID,))
+                    conn.commit()
+                    c.execute("UPDATE store SET quantity=? WHERE name=?", (quantChange, itemL,))
+                    conn.commit()
+                    print("Updated")
+
+                else:
+                    await ctx.send(f"{ctx.message.author} does not own {quantity}x {item.upper()}")
+            else:
+                await ctx.send(f"{ctx.message.author} owns no items")
+        else:
+            await ctx.send(f"{ctx.message.author} is not a member")
 
     #Allows a user to print the contents of the store, the price, and quantity
     @commands.command()
@@ -125,7 +161,7 @@ class MemberCommands(commands.Cog):
         itemQuant = list(itemDict.values())
 
         embed = discord.Embed(colour=discord.Color.red())
-        embed.set_footer(text=ctx.author.name, icon_url=ctx.author.avatar_url)
+        #embed.set_footer(text=ctx.author.name, icon_url=ctx.author.avatar_url)
 
         for i in range(len(itemNames)):
             embed.add_field(name=itemQuant[i], value=itemNames[i], inline=False)
