@@ -61,24 +61,53 @@ class AdminCommands(commands.Cog):
     @commands.command(aliases=['add'])
     @commands.has_permissions(administrator=True)
     async def addMember(self, ctx, id, startAm=1000):
-        print(f"adding {id[3:-1]}")
         member = id[3:-1]
-        #figure out a way to print the name of the user from the ID to the console
-        c.execute("INSERT INTO bank VALUES (?,?,?)", (member, startAm, '{}',))
-        conn.commit()
+
+        c.execute("SELECT id FROM bank WHERE id=?", (member,))
+        check = c.fetchone()
+
+        if check == None:
+            c.execute("INSERT INTO bank VALUES (?,?,?)", (member, startAm, '{}',))
+            conn.commit()
+            print(f"adding {id[3:-1]}")
+            await ctx.send(f"{id} has been added")
+        else:
+            await ctx.send(f"{id} is already a member")
 
     @commands.command(aliases=['remove'])
     @commands.has_permissions(administrator=True)
     async def removeMember(self, ctx, id):
-        print(f"removing {id[3:-1]}")
         member = id[3:-1]
-        c.execute("DELETE FROM bank WHERE id=?", (member,))
-        conn.commit()
 
-    @commands.command()
+        c.execute("SELECT id FROM bank WHERE id=?", (member,))
+        check = c.fetchone()
+
+        if check != None:
+            c.execute("DELETE FROM bank WHERE id=?", (member,))
+            conn.commit()
+            print(f"removing {id[3:-1]}")
+            await ctx.send(f"{id} has been removed")
+        else:
+            await ctx.send(f"{id} is not a member")
+
+    @commands.command(aliases=['add$'])
     @commands.has_permissions(administrator=True)
-    async def addMoney(self, ctx, id, amount): #IMPLEMENT
-        pass
+    async def addMoney(self, ctx, id, amount):
+        member = id[3:-1]
+
+        c.execute("SELECT id FROM bank WHERE id=?", (member,))
+        check = c.fetchone()
+
+        if check != None:
+            c.execute("SELECT balance FROM bank WHERE id=?", (member,))
+            bal = c.fetchone()
+
+            balChange = bal[0]+int(amount)
+            c.execute("UPDATE bank SET balance=? WHERE id=?", (balChange,member,))
+            conn.commit()
+            print(f"adding money to {id[3:-1]}")
+        else:
+            await ctx.send(f"{id} is not a member")
 
     @commands.command()
     @commands.has_permissions(administrator=True)

@@ -132,8 +132,22 @@ class MemberCommands(commands.Cog):
 
     #Allows a user to print the contents of the store, the price, and quantity
     @commands.command()
-    async def store(self):
-        pass
+    async def store(self, ctx):
+        c.execute("SELECT name FROM store")
+        names = c.fetchall()
+        c.execute("SELECT price FROM store")
+        prices = c.fetchall()
+        c.execute("SELECT quantity FROM store")
+        quants = c.fetchall()
+
+        embed = discord.Embed(colour=discord.Color.purple())
+
+        for i in range(len(names)):
+            embed.add_field(name="Item", value=names[i][0], inline=True)
+            embed.add_field(name="Price", value=prices[i][0])
+            embed.add_field(name="Quantity", value=quants[i][0])
+
+        await ctx.send(embed=embed)
 
     #Allows a user to see their balance
     @commands.command(aliases=['bal'])
@@ -146,11 +160,11 @@ class MemberCommands(commands.Cog):
         embed.add_field(name="Balance", value=f"Å{bal[0]}")
         embed.set_footer(text=ctx.author.name, icon_url=ctx.author.avatar_url)
 
-        print("balance embed")
+        print("balance")
         await ctx.send(embed=embed)
 
     #Allows a user to see the items they own
-    @commands.command()
+    @commands.command(aliases=['inventory', 'inven'])
     async def items(self, ctx): #looks gross but it works for now. Dont know what to do to make it look nice (will work on)
         senderID = ctx.author.id
         c.execute("SELECT items FROM bank WHERE id=?", (senderID,))
