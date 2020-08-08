@@ -27,7 +27,7 @@ class MemberCommands(commands.Cog):
             embed.add_field(name="refresh", value="Only owner can do this; resets database with server members that have a certain role (optional: starting money amount); ex: .refresh IRL 1000, adds everyone in server with the role IRL to the database and sets their balance to 1000 (default is 1000)", inline=False)
             embed.add_field(name="addMember", value="Manually add member to database to access commands; ex: .addMember @someone 1000 (money is optional)", inline=False)
             embed.add_field(name="removeMember", value="Manually remove member from database; ex: .removeMember @someone", inline=False)
-            #embed.add_field(name="addMoney", value="Manually add money to a member in the database; ex: .addMoney @someone 1000", inline=False)
+            embed.add_field(name="addMoney", value="Manually add money to a member in the database; ex: .addMoney @someone 1000", inline=False)
             embed.add_field(name="stock", value="Add or update items in the database (name price quantity); ex: .stock bread 20 3", inline=False)
             embed.add_field(name="unstock", value="Remove item from database")
             await sender.send(embed=embed)
@@ -37,10 +37,10 @@ class MemberCommands(commands.Cog):
             embed.set_author(name="Help")
             embed.add_field(name="Calling commands", value="Call commands with the \'.\' prefix (ex: .help)")
             embed.add_field(name="buy", value="Allows user to buy available items from the store; put the name of the item after the command (optional: amount of that item) ex: .buy bread 3", inline=False)
-            #embed.add_field(name="sell", value="Allows user to sell items from their inventory; ex: .sell bread 2", inline=False)
-            #embed.add_field(name="store", value="Shows the items available in the store along with their price and quantity", inline=False)
+            embed.add_field(name="sell", value="Allows user to sell items from their inventory; ex: .sell bread 2", inline=False)
+            embed.add_field(name="store", value="Shows the items available in the store along with their price and quantity", inline=False)
             embed.add_field(name="balance", value="Shows the message author\'s balance (if they are a member)", inline=False)
-            #embed.add_field(name="items", value="Show the message author\'s items (if they are a member)", inline=False)
+            embed.add_field(name="items", value="Show the message author\'s items (if they are a member)", inline=False)
             await sender.send(embed=embed)
 
     @commands.command()
@@ -87,7 +87,6 @@ class MemberCommands(commands.Cog):
                 await ctx.send(f"{item.upper()} is not stocked")
         else:
             await ctx.send(f"{ctx.message.author} is not a member")
-
 
     #Allow a user to sell items from their iventory
     @commands.command()

@@ -19,7 +19,7 @@ class AdminCommands(commands.Cog):
     async def on_ready(self):
         print("Bot is ready.")
 
-    @commands.command()
+    @commands.command(pass_context=True)
     @commands.has_permissions(administrator=True)
     async def exit(self, ctx):
         conn.close()
@@ -30,7 +30,7 @@ class AdminCommands(commands.Cog):
     async def clear(self, ctx, amount : int):
         await ctx.channel.purge(limit=amount)
 
-    @commands.command()
+    @commands.command(pass_context=True)
     async def refresh(self, ctx, roleName, startAm=1000):
         sender = ctx.message.author
         owner = ctx.message.guild.owner
@@ -58,7 +58,7 @@ class AdminCommands(commands.Cog):
         c.execute("SELECT * FROM bank")
         print(c.fetchall())
 
-    @commands.command(aliases=['add'])
+    @commands.command(pass_context=True, aliases=['add'])
     @commands.has_permissions(administrator=True)
     async def addMember(self, ctx, id, startAm=1000):
         member = id[3:-1]
@@ -74,7 +74,7 @@ class AdminCommands(commands.Cog):
         else:
             await ctx.send(f"{id} is already a member")
 
-    @commands.command(aliases=['remove'])
+    @commands.command(pass_context=True, aliases=['remove'])
     @commands.has_permissions(administrator=True)
     async def removeMember(self, ctx, id):
         member = id[3:-1]
@@ -90,7 +90,7 @@ class AdminCommands(commands.Cog):
         else:
             await ctx.send(f"{id} is not a member")
 
-    @commands.command(aliases=['add$'])
+    @commands.command(pass_context=True, aliases=['add$'])
     @commands.has_permissions(administrator=True)
     async def addMoney(self, ctx, id, amount):
         member = id[3:-1]
@@ -109,7 +109,7 @@ class AdminCommands(commands.Cog):
         else:
             await ctx.send(f"{id} is not a member")
 
-    @commands.command()
+    @commands.command(pass_context=True)
     @commands.has_permissions(administrator=True)
     async def stock(self, ctx, item, cost, quantity):
         itemL = item.lower()
@@ -129,7 +129,7 @@ class AdminCommands(commands.Cog):
             print("adding")
             await ctx.send(f"{quantity} {item.upper()} has been added for Å{cost} each")
 
-    @commands.command()
+    @commands.command(pass_context=True)
     @commands.has_permissions(administrator=True)
     async def unstock(self, ctx, item):
         itemL = item.lower()
